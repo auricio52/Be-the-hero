@@ -34,4 +34,26 @@ describe('Sessions', () => {
         expect(response.body).toHaveProperty('name')
 
     })
+
+    it('Should be able to not create a new session', async () => {
+        const ong = {
+            name: 'ONG',
+            email: 'newong@gmail.com',
+            whatsapp: '8591234212',
+            city: 'Ceará',
+            uf: 'CE'
+        }
+
+        const responseOngID = await request(app).post('/ongs').send(ong)
+
+        const response = await request(app).post('/sessions').send({id: 'iahf323'})
+
+        expect(responseOngID.status).toBe(200)
+        expect(responseOngID.body.id).toHaveLength(8)
+
+        expect(response.body).not.toBe(null)
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('error')
+
+    })
 })

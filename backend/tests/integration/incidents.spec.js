@@ -98,4 +98,35 @@ describe('Incidents', () => {
         expect(response.status).toBe(204)
     })
 
+    it('Should be able to not delete a incident', async () => {
+        const ong = {
+            name: ' AEG',
+            email: 'aeg@gmail.com',
+            whatsapp: '1382374950',
+            city: 'Ceará',
+            uf: 'CE'
+        }
+
+        const incident1 = {
+            title: 'Cadelinha atropelada',
+            description: 'Uma cadelinha atropelada e necessita de cirurgia',
+            value: 190.0
+        }
+
+        const incident2 = {
+            title: 'Cadelinha doente',
+            description: 'Uma cadelinha que necessita de remédios',
+            value: 120.0
+        }
+
+        const responseOngID = await request(app).post('/ongs').send(ong)
+
+        const responseIncident1 = await request(app).post('/incidents').set('Authorization', responseOngID.body.id).send(incident1)        
+        const responseIncident2 = await request(app).post('/incidents').set('Authorization', responseOngID.body.id).send(incident2)
+
+        const response = await request(app).delete(`/incidents/${responseIncident1.body.id}`).set('Authorization', '12414')
+
+        expect(response.status).toBe(401)
+    })
+
 })
